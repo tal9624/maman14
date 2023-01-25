@@ -18,23 +18,29 @@ int main( int argc, char *argv[])
 	char **macConts = NULL; /*dynamicly initializing size of string array */
 	char **macNames = NULL;/*dynamicly initializing size of string array */
 	char buffer[LINELEN];
-	char *kelet = argv[1];
 	FILE *fpNew = NULL;
 	FILE *fp = NULL; /* file pointer */	
+	char kelet1[30];
+	char pelet1[30];
+	strcpy(kelet1,argv[1]);
+	strcat(kelet1,".as");
+	strcpy(pelet1,argv[1]);
+	strcat(pelet1,".am");
+	
 	if (numberOfArguments != 2) 
 	{
 		printf("number of arguments should be 2,\n");
 		printf("1 for the program name,\nand 1 for  the file name.\n");
 		return -1;
 	}
-	fp = fopen(kelet, "r");
+	fp = fopen(kelet1, "r");
 	
 	if (fp == NULL)
 	{	
 		printf("reading failed\n");
         return -1;   
 	} 
-	fpNew = fopen ("temp.txt", "w");
+	fpNew = fopen (pelet1, "w");
 	if (fpNew == NULL)
 	{	
 		printf("reading failed\n");
@@ -63,8 +69,7 @@ int main( int argc, char *argv[])
 			printing(buffer,fp, fpNew , macNames , macConts,&maci); 
 		}			
 	}
-	remove(kelet);
-	rename("temp.txt", kelet);
+
 	for (i=0;i<=maci;i++)
 	free(macNames[i]);
 	free(macNames);
@@ -104,9 +109,7 @@ for each content line we'll reallocate another space for it,
 as the size of the line*/
 void saveCon(char* buffer , char*** macConts,int *maci,int i,int* mcrBool)
 {
-	
-	if (!(buffer[i] == 'e' && buffer[i+1] == 'n' && buffer[i+2] == 'd' /* not... */ /* strncmp6*/
-	&& buffer[i+3] == 'm' && buffer[i+4] == 'c' &&  buffer[i+5] == 'r')) /* ...endmcr*/
+	if(strncmp(buffer + i, "endmcr", 6)) /* not endmcr */
 		{/* inserting the content of the macro to maccontent */
 		 (*macConts)[*maci] = realloc((*macConts)[*maci],(strlen((*macConts)[*maci]+1)+(strlen(buffer)+1))*sizeof(char*));
 		strcat((*macConts)[*maci],buffer);
